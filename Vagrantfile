@@ -4,7 +4,7 @@ Vagrant.configure("2") do |config|
     # Application VM 1 
     config.vm.define "app1" do |app1|
       app1.vm.hostname = "app1.local"
-      app1.vm.network "private_network", ip: "192.168.56.10"
+      app1.vm.network "private_network", ip: "192.168.56.11"
   
       app1.vm.provider "virtualbox" do |vb|
         vb.memory = "1024"
@@ -19,7 +19,7 @@ Vagrant.configure("2") do |config|
     # Application VM 2 
     config.vm.define "app2" do |app2|
       app2.vm.hostname = "app2.local"
-      app2.vm.network "private_network", ip: "192.168.56.11"
+      app2.vm.network "private_network", ip: "192.168.56.12"
   
       app2.vm.provider "virtualbox" do |vb|
         vb.memory = "1024"
@@ -34,7 +34,7 @@ Vagrant.configure("2") do |config|
     # Load Balancer
     config.vm.define "lb" do |lb|
       lb.vm.hostname = "lb.local"
-      lb.vm.network "private_network", ip: "192.168.56.12"
+      lb.vm.network "private_network", ip: "192.168.56.10"
   
       lb.vm.provider "virtualbox" do |vb|
         vb.memory = "512"
