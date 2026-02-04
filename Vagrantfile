@@ -11,6 +11,8 @@ Vagrant.configure("2") do |config|
         vb.cpus = 1
       end
 
+      app1.vm.synced_folder "./uploads", "/var/lib/pictapp/uploads"
+
       app1.vm.provision "shell", inline: <<-SHELL
         echo "#{File.read(File.expand_path('~/.ssh/ansible.pub'))}" >> /home/vagrant/.ssh/authorized_keys
       SHELL
@@ -25,6 +27,8 @@ Vagrant.configure("2") do |config|
         vb.memory = "1024"
         vb.cpus = 1
       end
+
+      app2.vm.synced_folder "./uploads", "/var/lib/pictapp/uploads"
 
       app2.vm.provision "shell", inline: <<-SHELL
         echo "#{File.read(File.expand_path('~/.ssh/ansible.pub'))}" >> /home/vagrant/.ssh/authorized_keys
@@ -98,7 +102,7 @@ Vagrant.configure("2") do |config|
 
       consul.vm.provision "shell", inline: <<-SHELL
         echo "#{File.read(File.expand_path('~/.ssh/ansible.pub'))}" >> /home/vagrant/.ssh/authorized_keys
-    SHELL
+      SHELL
     end
   
   end

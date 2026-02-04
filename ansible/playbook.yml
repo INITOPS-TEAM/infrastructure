@@ -1,3 +1,15 @@
+- name: Configure db
+  hosts: db
+  become: yes
+  roles:
+    - db
+
+- name: Configure app
+  hosts: app
+  become: yes
+  roles:
+    - app
+
 - name: Configure lb
   hosts: lb
   become: yes

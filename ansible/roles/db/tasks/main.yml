@@ -1,0 +1,55 @@
+- name: Ensure Python3 is installed
+  apt:
+    name: python3
+    state: present
+    update_cache: yes
+
+- name: Ensure python3-psycopg2 package is installed
+  apt:
+    name: python3-psycopg2
+    state: present
+
+- name: Install PostgreSQL
+  apt:
+    name: "postgresql-{{ postgres_version }}"
+    state: present
+    update_cache: yes
+
+- name: Ensure PostgreSQL service is running
+  service:
+    name: postgresql
+    state: started
+    enabled: yes
+
+- name: Configure postgresql.conf to listen on all interfaces
+  lineinfile:
+    path: /etc/postgresql/{{ postgres_version }}/main/postgresql.conf
+    regexp: '^#?listen_addresses\s*='
+    line: "listen_addresses = '*'"
+    state: present
+    backrefs: yes
+  notify: Restart PostgreSQL
+
+- name: Configure pg_hba.conf
+  template:
+    src: pg_hba.conf.j2
+    dest: /etc/postgresql/{{ postgres_version }}/main/pg_hba.conf
+    owner: postgres
+    group: postgres
+    mode: 0640
+  notify: Restart PostgreSQL
+
+- name: Create database
+  postgresql_db:
+    name: "{{ db_name }}"
+    state: present
+  become_user: postgres
+
+- name: Create database user
+  postgresql_user:
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    db: "{{ db_name }}"
+    priv: "ALL"
+    state: present
+  become_user: postgres
