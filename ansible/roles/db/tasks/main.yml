@@ -53,3 +53,16 @@
     priv: "ALL"
     state: present
   become_user: postgres
+
+- name: Copy database schema to db host
+  copy:
+    src: schema.sql
+    dest: /tmp/schema.sql
+    owner: postgres
+    group: postgres
+    mode: '0644'
+
+- name: Bootstrap database schema
+  become_user: postgres
+  command: psql -d {{ db_name }} -f /tmp/schema.sql
+  run_once: true
