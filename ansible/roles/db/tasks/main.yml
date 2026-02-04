@@ -66,3 +66,11 @@
   become_user: postgres
   command: psql -d {{ db_name }} -f /tmp/schema.sql
   run_once: true
+
+- name: Grant privileges on tables and sequences in public schema to db user
+  become_user: postgres
+  community.postgresql.postgresql_query:
+    db: "{{ db_name }}"
+    query: |
+      GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO {{ db_user }};
+      GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {{ db_user }};
