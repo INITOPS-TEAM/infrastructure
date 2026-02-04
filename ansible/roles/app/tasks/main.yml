@@ -16,15 +16,11 @@
     force: yes
   notify: Restart app
 
-- name: Create virtual environment
-  command: python3 -m venv {{ app_dest }}/venv
-  args:
-    creates: "{{ app_dest }}/venv/bin/activate"
-
-- name: Install Python dependencies
-  pip:
+- name: Create virtualenv and install Python dependencies
+  ansible.builtin.pip:
     requirements: "{{ python_requirements }}"
-    executable: "{{ app_dest }}/venv/bin/pip"
+    virtualenv: "{{ app_dest }}/venv"
+    virtualenv_command: python3 -m venv
 
 - name: Create uploads directory
   file:
@@ -32,13 +28,11 @@
     state: directory
     owner: vagrant
     group: vagrant
-    mode: "0755"
 
 - name: Copy systemd service file
   template:
     src: app.service.j2
     dest: "/etc/systemd/system/app.service"
-    mode: "0644"
   notify: 
     - Reload systemd
     - Restart app

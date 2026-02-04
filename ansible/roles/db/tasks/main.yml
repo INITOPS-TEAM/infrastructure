@@ -1,17 +1,8 @@
-- name: Ensure Python3 is installed
+- name: Install PostgreSQL and required packages
   apt:
-    name: python3
-    state: present
-    update_cache: yes
-
-- name: Ensure python3-psycopg2 package is installed
-  apt:
-    name: python3-psycopg2
-    state: present
-
-- name: Install PostgreSQL
-  apt:
-    name: "postgresql-{{ postgres_version }}"
+    name:
+      - python3
+      - postgresql-{{ postgres_version }}
     state: present
     update_cache: yes
 
