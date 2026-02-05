@@ -1,0 +1,10 @@
+# Local connections
+local   all             postgres                                peer
+local   all             all                                     peer
+
+# Localhost
+host    all             all             127.0.0.1/32            md5
+
+# Application servers
+host    {{ db_name }}   {{ db_user }}   192.168.56.11/32         md5
+host    {{ db_name }}   {{ db_user }}   192.168.56.12/32         md5

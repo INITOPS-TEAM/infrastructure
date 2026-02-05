@@ -1,0 +1,67 @@
+- name: Install PostgreSQL and required packages
+  apt:
+    name:
+      - python3
+      - postgresql-{{ postgres_version }}
+    state: present
+    update_cache: yes
+
+- name: Ensure PostgreSQL service is running
+  service:
+    name: postgresql
+    state: started
+    enabled: yes
+
+- name: Configure postgresql.conf to listen on all interfaces
+  lineinfile:
+    path: /etc/postgresql/{{ postgres_version }}/main/postgresql.conf
+    regexp: '^#?listen_addresses\s*='
+    line: "listen_addresses = '*'"
+    state: present
+    backrefs: yes
+  notify: Restart PostgreSQL
+
+- name: Configure pg_hba.conf
+  template:
+    src: pg_hba.conf.j2
+    dest: /etc/postgresql/{{ postgres_version }}/main/pg_hba.conf
+    owner: postgres
+    group: postgres
+    mode: 0640
+  notify: Restart PostgreSQL
+
+- name: Create database
+  postgresql_db:
+    name: "{{ db_name }}"
+    state: present
+  become_user: postgres
+
+- name: Create database user
+  postgresql_user:
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    db: "{{ db_name }}"
+    priv: "ALL"
+    state: present
+  become_user: postgres
+
+- name: Copy database schema to db host
+  copy:
+    src: schema.sql
+    dest: /tmp/schema.sql
+    owner: postgres
+    group: postgres
+    mode: '0644'
+
+- name: Bootstrap database schema
+  become_user: postgres
+  command: psql -d {{ db_name }} -f /tmp/schema.sql
+  run_once: true
+
+- name: Grant privileges on tables and sequences in public schema to db user
+  become_user: postgres
+  community.postgresql.postgresql_query:
+    db: "{{ db_name }}"
+    query: |
+      GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO {{ db_user }};
+      GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {{ db_user }};

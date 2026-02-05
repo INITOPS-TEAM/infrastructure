@@ -1,0 +1,16 @@
+[Unit]
+Description=App Service
+After=network.target
+
+[Service]
+Environment=FLASK_SECRET_KEY={{ flask_secret_key }}
+Environment=UPLOAD_ROOT={{ uploads_path }}
+Environment=DATABASE_URL={{ database_url }}
+User=vagrant
+WorkingDirectory={{ app_dest }}/app
+ExecStart={{ app_dest }}/venv/bin/python3 {{ app_dest }}/app/app.py
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
