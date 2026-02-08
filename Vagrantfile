@@ -41,7 +41,7 @@ Vagrant.configure("2") do |config|
       lb.vm.network "private_network", ip: "192.168.56.10"
   
       lb.vm.provider "virtualbox" do |vb|
-        vb.memory = "512"
+        vb.memory = "1024"
         vb.cpus = 1
       end
 
@@ -96,7 +96,7 @@ Vagrant.configure("2") do |config|
       consul.vm.network "private_network", ip: "192.168.56.15"
   
       consul.vm.provider "virtualbox" do |vb|
-        vb.memory = "512"
+        vb.memory = "1024"
         vb.cpus = 1
       end
 
