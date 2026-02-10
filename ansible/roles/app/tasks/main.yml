@@ -41,3 +41,12 @@
   systemd:
     name: app
     enabled: yes
+
+- name: Register flask-app in Consul
+  template:
+    src: flask-app.json.j2
+    dest: "{{ consul_config_dir }}/flask-app.json"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0644'
+  notify: Restart consul

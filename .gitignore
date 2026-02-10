@@ -1,3 +1,5 @@
 .vagrant
 group_vars/
 uploads/
+.DS_Store
+consul_gossip_key.txt

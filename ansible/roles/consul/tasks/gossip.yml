@@ -1,0 +1,46 @@
+---
+- name: Generate gossip key
+  shell: consul keygen
+  register: gossip_key
+  when: inventory_hostname == groups['consul'][0]
+  run_once: true
+
+- name: Save gossip key locally
+  copy:
+    content: "{{ gossip_key.stdout }}"
+    dest: "{{ playbook_dir }}/consul_gossip_key.txt"
+    mode: '0600'
+  delegate_to: localhost
+  become: no
+  when: inventory_hostname == groups['consul'][0]
+  run_once: true
+
+- name: Read gossip key
+  set_fact:
+    consul_gossip_key: "{{ lookup('file', playbook_dir + '/consul_gossip_key.txt') }}"
+
+- name: Create gossip key file on remote host
+  copy:
+    content: "{{ consul_gossip_key }}"
+    dest: "{{ consul_config_dir }}/gossip.key"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0640'
+  notify: Restart consul
+
+- name: Remove old Consul data when encryption key changes
+  file:
+    path: "{{ consul_data_dir }}"
+    state: absent
+  when: 
+    - consul_gossip_key is defined
+    - consul_mode == "client"
+
+- name: Recreate Consul data directory
+  file:
+    path: "{{ consul_data_dir }}"
+    state: directory
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0755'
+  when: consul_mode == "client"

@@ -4,6 +4,46 @@
     state: present
     update_cache: yes
 
+- name: Install dnsmasq
+  apt:
+    name: dnsmasq
+    state: present
+
+- name: Stop systemd-resolved (conflicts with dnsmasq on port 53)
+  systemd:
+    name: systemd-resolved
+    state: stopped
+    enabled: no
+
+- name: Configure dnsmasq for Consul DNS
+  copy:
+    dest: /etc/dnsmasq.d/10-consul
+    content: |
+      server=/consul/127.0.0.1#8600
+      listen-address=127.0.0.1
+      bind-interfaces
+    mode: '0644'
+  notify: Restart dnsmasq
+
+- name: Remove resolv.conf symlink
+  file:
+    path: /etc/resolv.conf
+    state: absent
+
+- name: Create resolv.conf for dnsmasq
+  copy:
+    dest: /etc/resolv.conf
+    content: |
+      nameserver 127.0.0.1
+      nameserver 8.8.8.8
+    mode: '0644'
+
+- name: Start dnsmasq
+  systemd:
+    name: dnsmasq
+    state: started
+    enabled: yes
+
 - name: Copy nginx load balancer config
   template:
     src: nginx_lb.conf.j2
@@ -29,3 +69,12 @@
     name: nginx
     state: started
     enabled: yes
+
+- name: Register nginx service in Consul
+  template:
+    src: nginx-service.json.j2
+    dest: "{{ consul_config_dir }}/nginx-service.json"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0644'
+  notify: Reload consul

@@ -11,7 +11,7 @@
     state: directory
     owner: "{{ consul_user }}"
     group: "{{ consul_group }}"
-    mode: '0755'
+    mode: 0755
   loop:
     - "{{ consul_config_dir }}"
     - "{{ consul_data_dir }}"
@@ -22,9 +22,9 @@
     dest: "{{ consul_config_dir }}/consul.hcl"
     owner: "{{ consul_user }}"
     group: "{{ consul_group }}"
-    mode: '0644' #owner - r+w, group/other - r
+    mode: '0644' 
   when: consul_mode == "server"
-  notify: restart consul
+  notify: Restart consul
 
 - name: Deploy Consul client config
   template:
@@ -34,11 +34,38 @@
     group: "{{ consul_group }}"
     mode: '0644'
   when: consul_mode == "client"
-  notify: restart consul
+  notify: Restart consul
+
+# TO CHANGE [Service] Type=notify FOR Type=simple
+- name: Create systemd override directory for Consul
+  file:
+    path: /etc/systemd/system/consul.service.d
+    state: directory
+    mode: '0755'
+
+- name: Override Consul service type 
+  copy:
+    content: |
+      [Service]
+      Type=
+      Type=simple
+    dest: /etc/systemd/system/consul.service.d/override.conf
+    mode: '0644'
+  register: override_created
+
+- name: Reload systemd daemon immediately
+  systemd:
+    daemon_reload: yes
+  when: override_created.changed
+
+- name: Restart consul if override changed
+  systemd:
+    name: consul
+    state: restarted
+  when: override_created.changed
 
 - name: Enable and start Consul service
   systemd:
     name: consul
     enabled: yes
     state: started
-    daemon_reload: yes
