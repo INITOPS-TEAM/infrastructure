@@ -27,3 +27,34 @@ CREATE INDEX IF NOT EXISTS idx_images_user_id
 
 CREATE INDEX IF NOT EXISTS idx_images_created_at
     ON images(created_at);
+
+CREATE TABLE IF NOT EXISTS likes (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    image_id INTEGER NOT NULL,
+
+    CONSTRAINT fk_likes_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_likes_image
+        FOREIGN KEY (image_id)
+        REFERENCES images(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT unique_user_image
+        UNIQUE (user_id, image_id)
+);
+
+-- Indexes for common access patterns
+CREATE INDEX IF NOT EXISTS idx_likes_user_id ON likes(user_id);
+CREATE INDEX IF NOT EXISTS idx_likes_image_id ON likes(image_id);
+
+-- Add last_ip in users table
+ALTER TABLE users ADD COLUMN IF NOT EXISTS last_ip TEXT;
+
+CREATE TABLE IF NOT EXISTS banned (
+    id SERIAL PRIMARY KEY,
+    ip TEXT UNIQUE,
+);

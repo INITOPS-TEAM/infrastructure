@@ -7,8 +7,8 @@ Environment=FLASK_SECRET_KEY={{ flask_secret_key }}
 Environment=UPLOAD_ROOT={{ uploads_path }}
 Environment=DATABASE_URL={{ database_url }}
 User=vagrant
-WorkingDirectory={{ app_dest }}/app
-ExecStart={{ app_dest }}/venv/bin/python3 {{ app_dest }}/app/app.py
+WorkingDirectory={{ app_dest }}
+ExecStart={{ app_dest }}/venv/bin/python3 {{ app_dest }}/run.py
 Restart=always
 RestartSec=2
 
