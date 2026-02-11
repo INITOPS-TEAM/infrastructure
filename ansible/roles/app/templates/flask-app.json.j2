@@ -2,7 +2,7 @@
   "service": {
     "name": "flask-app",
     "id": "web-{{ inventory_hostname }}",
-    "address": "{{ ansible_facts['default_ipv4']['address'] }}",
+    "address": "{{ ansible_facts['eth1']['ipv4']['address'] }}",
     "port": 5000,
     "tags": ["flask", "web"],
     "checks": [
