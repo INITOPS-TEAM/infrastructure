@@ -2,6 +2,7 @@
   apt:
     name:
       - python3
+      - python3-psycopg2
       - postgresql-{{ postgres_version }}
     state: present
     update_cache: yes
@@ -40,8 +41,15 @@
   postgresql_user:
     name: "{{ db_user }}"
     password: "{{ db_password }}"
-    db: "{{ db_name }}"
-    priv: "ALL"
+    state: present
+  become_user: postgres
+
+- name: Grant privileges to user
+  postgresql_privs:
+    database: "{{ db_name }}"
+    roles: "{{ db_user }}"
+    privs: ALL
+    type: database
     state: present
   become_user: postgres
 
@@ -65,3 +73,12 @@
     query: |
       GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO {{ db_user }};
       GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {{ db_user }};
+
+- name: Register PostgreSQL service in Consul
+  template:
+    src: postgres-service.json.j2
+    dest: "{{ consul_config_dir }}/postgres-service.json"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0644'
+  notify: Reload consul

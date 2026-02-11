@@ -2,3 +2,18 @@
   service:
     name: nginx
     state: restarted
+    
+- name: Reload consul
+  systemd:
+    name: consul
+    state: reloaded
+
+- name: Restart systemd-resolved
+  systemd:
+    name: systemd-resolved
+    state: restarted
+
+- name: Restart dnsmasq
+  systemd:
+    name: dnsmasq
+    state: restarted

@@ -1,0 +1,27 @@
+---
+- name: Create /etc/apt/keyrings directory
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755' #owner - r+w+x, group/other - r+x
+
+- name: Add HashiCorp GPG key
+  shell: |
+    curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /etc/apt/keyrings/hashicorp-archive-keyring.gpg > /dev/null
+  args:
+    creates: /etc/apt/keyrings/hashicorp-archive-keyring.gpg
+
+- name: Add HashiCorp repository
+  shell: |
+    echo "deb [signed-by=/etc/apt/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+  args:
+    creates: /etc/apt/sources.list.d/hashicorp.list
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install Consul
+  apt:
+    name: consul
+    state: present

@@ -1,0 +1,16 @@
+{
+  "service": {
+    "name": "nginx-lb",
+    "id": "nginx-{{ inventory_hostname }}",
+    "address": "{{ ansible_facts['eth1']['ipv4']['address'] }}",
+    "port": 80,
+    "tags": ["nginx", "load-balancer"],
+    "checks": [
+      {
+        "http": "http://{{ ansible_facts['default_ipv4']['address'] }}:80",
+        "interval": "10s",
+        "timeout": "2s"
+      }
+    ]
+  }
+}

@@ -1,0 +1,81 @@
+---
+- name: Create consul user
+  user:
+    name: "{{ consul_user }}"
+    system: yes
+    shell: /bin/false
+
+- name: Create consul directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: 0755
+  loop:
+    - "{{ consul_config_dir }}"
+    - "{{ consul_data_dir }}"
+
+- name: Deploy Consul server config
+  template:
+    src: server_consul.hcl.j2
+    dest: "{{ consul_config_dir }}/consul.hcl"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0644' 
+  when: consul_mode == "server"
+  register: server_config_changed
+  notify: Restart consul
+
+- name: Force gossip key update on server
+  shell: |
+    consul keyring -install "{{ consul_gossip_key }}" || true
+    consul keyring -use "{{ consul_gossip_key }}"
+  when: 
+    - consul_mode == "server"
+    - server_config_changed.changed
+  ignore_errors: yes
+
+- name: Deploy Consul client config
+  template:
+    src: client_consul.hcl.j2
+    dest: "{{ consul_config_dir }}/consul.hcl"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0644'
+  when: consul_mode == "client"
+  notify: Restart consul
+
+# TO CHANGE [Service] Type=notify FOR Type=simple
+- name: Create systemd override directory for Consul
+  file:
+    path: /etc/systemd/system/consul.service.d
+    state: directory
+    mode: '0755'
+
+- name: Override Consul service type 
+  copy:
+    content: |
+      [Service]
+      Type=
+      Type=simple
+    dest: /etc/systemd/system/consul.service.d/override.conf
+    mode: '0644'
+  register: override_created
+
+- name: Reload systemd daemon immediately
+  systemd:
+    daemon_reload: yes
+  when: override_created.changed
+
+- name: Restart consul if override changed
+  systemd:
+    name: consul
+    state: restarted
+  when: override_created.changed
+
+- name: Enable and start Consul service
+  systemd:
+    name: consul
+    enabled: yes
+    state: started

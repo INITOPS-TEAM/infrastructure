@@ -1,0 +1,16 @@
+{
+  "service": {
+    "name": "postgres-service",
+    "id": "postgres-{{ inventory_hostname }}",
+    "address": "{{ ansible_facts['default_ipv4']['address'] }}",
+    "port": 5432,
+    "tags": ["database", "postgresql"],
+    "checks": [
+      {
+        "tcp": "localhost:5432",
+        "interval": "10s",
+        "timeout": "2s"
+      }
+    ]
+  }
+}
