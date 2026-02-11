@@ -11,8 +11,21 @@ encrypt = "{{ consul_gossip_key }}"
 ui_config {
   enabled = true
 }
-ports {
-  http = 8500
-  dns  = 8600
+tls {
+  defaults {
+    ca_file   = "{{ consul_config_dir }}/certs/consul-agent-ca.pem"
+    cert_file = "{{ consul_config_dir }}/certs/server.pem"
+    key_file  = "{{ consul_config_dir }}/certs/server-key.pem"
+
+    verify_incoming = true
+    verify_outgoing = true
+  }
 }
+
+ports {
+  http  = -1
+  https = 8501
+  dns   = 8600
+}
+
 log_level = "INFO"

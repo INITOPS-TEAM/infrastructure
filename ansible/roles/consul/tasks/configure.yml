@@ -14,7 +14,41 @@
     mode: 0755
   loop:
     - "{{ consul_config_dir }}"
+    - "{{ consul_config_dir }}/certs" 
     - "{{ consul_data_dir }}"
+
+# TLS certificates
+- name: Copy CA certificate
+  copy:
+    src: /tmp/consul-certs/consul-agent-ca.pem
+    dest: "{{ consul_config_dir }}/certs/consul-agent-ca.pem"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0644'
+
+- name: Copy server TLS files
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - { src: "/tmp/consul-certs/{{ consul_datacenter }}-server-consul-0.pem", dest: "{{ consul_config_dir }}/certs/server.pem", mode: '0644' }
+    - { src: "/tmp/consul-certs/{{ consul_datacenter }}-server-consul-0-key.pem", dest: "{{ consul_config_dir }}/certs/server-key.pem", mode: '0600' }
+  when: consul_mode == "server"
+
+- name: Copy client TLS files
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - { src: "/tmp/consul-certs/{{ consul_datacenter }}-client-consul-0.pem", dest: "{{ consul_config_dir }}/certs/client.pem", mode: '0644' }
+    - { src: "/tmp/consul-certs/{{ consul_datacenter }}-client-consul-0-key.pem", dest: "{{ consul_config_dir }}/certs/client-key.pem", mode: '0600' }
+  when: consul_mode == "client"
 
 - name: Deploy Consul server config
   template:
