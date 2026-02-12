@@ -11,6 +11,16 @@ retry_join = ["{{ consul_server_ip }}"]
 
 encrypt = "{{ consul_gossip_key }}"
 
+acl {
+  enabled                  = true
+  default_policy           = "deny"
+  enable_token_persistence = true
+
+  tokens {
+    default = "{{ consul_acl_token }}"
+  }
+}
+
 tls {
   defaults {
     ca_file   = "{{ consul_config_dir }}/certs/consul-agent-ca.pem"

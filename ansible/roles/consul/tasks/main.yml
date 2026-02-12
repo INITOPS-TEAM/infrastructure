@@ -1,5 +1,6 @@
 ---
 - import_tasks: install.yml
 - import_tasks: gossip.yml
+- import_tasks: acl.yml
 - import_tasks: tls.yml  
 - import_tasks: configure.yml
