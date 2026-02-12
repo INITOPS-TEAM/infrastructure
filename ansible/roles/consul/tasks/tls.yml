@@ -1,0 +1,39 @@
+---
+- name: Create local certs directory
+  file:
+    path: /tmp/consul-certs
+    state: directory
+    mode: '0755'
+  delegate_to: localhost
+  run_once: true
+  become: no
+
+- name: Generate CA certificate
+  shell: |
+    cd /tmp/consul-certs
+    consul tls ca create
+  args:
+    creates: /tmp/consul-certs/consul-agent-ca.pem
+  delegate_to: localhost
+  run_once: true
+  become: no
+
+- name: Generate server certificate
+  shell: |
+    cd /tmp/consul-certs
+    consul tls cert create -server -dc={{ consul_datacenter }}
+  args:
+    creates: /tmp/consul-certs/{{ consul_datacenter }}-server-consul-0.pem
+  delegate_to: localhost
+  run_once: true
+  become: no
+
+- name: Generate client certificate
+  shell: |
+    cd /tmp/consul-certs
+    consul tls cert create -client -dc={{ consul_datacenter }}
+  args:
+    creates: /tmp/consul-certs/{{ consul_datacenter }}-client-consul-0.pem
+  delegate_to: localhost
+  run_once: true
+  become: no

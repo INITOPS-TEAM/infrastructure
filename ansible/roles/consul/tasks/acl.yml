@@ -1,0 +1,21 @@
+---
+- name: Generate ACL initial management token
+  shell: openssl rand -base64 16
+  register: acl_token
+  run_once: true
+  delegate_to: localhost
+  when: consul_mode == "server"
+  become: no
+
+- name: Save ACL token locally
+  copy:
+    content: "{{ acl_token.stdout }}"
+    dest: "/tmp/consul_acl_token.txt"
+    mode: '0600'
+  delegate_to: localhost
+  when: consul_mode == "server"
+  become: no
+
+- name: Read ACL token
+  set_fact:
+    consul_acl_token: "{{ lookup('file', '/tmp/consul_acl_token.txt') }}"

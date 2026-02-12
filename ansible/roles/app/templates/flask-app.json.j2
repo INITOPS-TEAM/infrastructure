@@ -7,7 +7,7 @@
     "tags": ["flask", "web"],
     "checks": [
       {
-        "http": "http://{{ ansible_facts['eth1']['ipv4']['address'] }}:5000/health",
+        "http": "http://{{ ansible_facts['eth1']['ipv4']['address'] }}:5000/",
         "method": "GET",
         "interval": "10s",
         "timeout": "2s"

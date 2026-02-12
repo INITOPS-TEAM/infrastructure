@@ -35,12 +35,3 @@
   when: 
     - consul_gossip_key is defined
     - consul_mode == "client"
-
-- name: Recreate Consul data directory
-  file:
-    path: "{{ consul_data_dir }}"
-    state: directory
-    owner: "{{ consul_user }}"
-    group: "{{ consul_group }}"
-    mode: '0755'
-  when: consul_mode == "client"
