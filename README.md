@@ -17,7 +17,7 @@ Automated deployment of a Flask application with PostgreSQL backend, Nginx load 
 ## Quick Start
 
 **Deploy infrastructure**
-ansible-playbook -i ansible/inventory/hosts.ini ansible/playbook.yml
+`ansible-playbook -i ansible/inventory/hosts.ini ansible/playbook.yml`
 
 **Access application** 
-open http://192.168.56.10
+`open http://192.168.56.10`
