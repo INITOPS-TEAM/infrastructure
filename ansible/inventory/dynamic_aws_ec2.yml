@@ -11,3 +11,5 @@ groups:
   consul: "'pictapp-dev-consul' in tags.Name"
   jenkins: " 'pictapp-dev-jenkins' in tags.Name"
 
+compose:
+  private_interface: ens5

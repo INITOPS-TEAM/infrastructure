@@ -3,7 +3,7 @@ server     = true
 bootstrap_expect = 1
 datacenter = "{{ consul_datacenter }}"
 data_dir   = "{{ consul_data_dir }}"
-bind_addr   = "{{ ansible_facts['eth1']['ipv4']['address'] }}"
+bind_addr   = "{{ ansible_facts[private_interface]['ipv4']['address'] }}"
 client_addr = "0.0.0.0"
 
 ui_config {
