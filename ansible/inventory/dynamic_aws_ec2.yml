@@ -12,7 +12,7 @@ groups:
   jenkins: " 'pictapp-dev-jenkins' in tags.Name"
 
 compose:
-  ansible_host: private_ip_address
+  ansible_user: ubuntu
 
 vars:
   ansible_user: ubuntu
