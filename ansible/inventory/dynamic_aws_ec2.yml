@@ -12,7 +12,7 @@ groups:
   jenkins: " 'pictapp-dev-jenkins' in tags.Name"
 
 
-vars:
+compose:
   ansible_user: ubuntu
   consul_version: "1.22.3"
   consul_user: consul
