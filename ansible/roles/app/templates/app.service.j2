@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Environment=FLASK_SECRET_KEY={{ flask_secret_key }}
 Environment=DATABASE_URL={{ database_url }}
-Environment=AWS_REGION={{ aws_region }}
+Environment=AWS_REGION={{ ansible_ec2_placement_region }}
 Environment=S3_BUCKET_NAME={{ s3_bucket_name }}
 
 User={{ ansible_user }}
