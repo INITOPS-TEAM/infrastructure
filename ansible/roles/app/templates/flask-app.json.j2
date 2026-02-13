@@ -2,12 +2,12 @@
   "service": {
     "name": "flask-app",
     "id": "web-{{ inventory_hostname }}",
-    "address": "{{ ansible_facts['eth1']['ipv4']['address'] }}",
+    "address": "{{ private_ip_address }}",
     "port": 5000,
     "tags": ["flask", "web"],
     "checks": [
       {
-        "http": "http://{{ ansible_facts['eth1']['ipv4']['address'] }}:5000/",
+        "http": "http://{{ private_ip_address }}:5000/",
         "method": "GET",
         "interval": "10s",
         "timeout": "2s"
