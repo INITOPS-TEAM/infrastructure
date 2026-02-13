@@ -16,7 +16,7 @@ consul_config_dir: /etc/consul.d
 consul_acl_token: "{{ lookup('file', '/tmp/consul_acl_token.txt') }}"
 consul_server_ip: 10.10.11.188 # have to fix it
 
-# ansible_user: vagrant
+ansible_user: ubuntu
 ansible_ssh_private_key_file: ~/.ssh/ansible
 
 db_name: pictapp
