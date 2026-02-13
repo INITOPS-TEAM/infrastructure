@@ -1,4 +1,9 @@
 ---
+- name: Test vars
+  shell: |
+    echo "{{ ami_launch_index }}"
+
+
 - name: Create /etc/apt/keyrings directory
   file:
     path: /etc/apt/keyrings
