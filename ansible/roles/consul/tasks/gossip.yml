@@ -10,7 +10,6 @@
     content: "{{ gossip_key.stdout }}"
     dest: "{{ playbook_dir }}/consul_gossip_key.txt"
     mode: '0600'
-  delegate_to: localhost
   become: no
   when: inventory_hostname == groups['consul'][0]
   run_once: true

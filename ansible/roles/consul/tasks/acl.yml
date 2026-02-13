@@ -3,7 +3,6 @@
   shell: openssl rand -base64 16
   register: acl_token
   run_once: true
-  delegate_to: localhost
   when: consul_mode == "server"
   become: no
 
@@ -12,7 +11,6 @@
     content: "{{ acl_token.stdout }}"
     dest: "/tmp/consul_acl_token.txt"
     mode: '0600'
-  delegate_to: localhost
   when: consul_mode == "server"
   become: no
 
