@@ -2,11 +2,11 @@ pipeline {
     agent any 
 
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/INITOPS-TEAM/infrastructure.git'
-            }
-        }
+        // stage('Checkout') {
+        //     steps {
+        //         git 'https://github.com/INITOPS-TEAM/infrastructure.git'
+        //     }
+        // }
         stage('Prepare & Check') {
             steps {
                 script {
