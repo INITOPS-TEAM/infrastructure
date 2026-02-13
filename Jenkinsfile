@@ -20,7 +20,7 @@ pipeline {
             steps {
                 dir('ansible') {
                     sshagent(['pictapp-dev-ssh']) {    
-                        withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-access-key-veronika',secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]){
+                        withCredentials([string(credentialsId: 'flask-secret-key', variable: 'flask_secret_key'), string(credentialsId: 'db-password', variable: 'db_password'), aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-access-key-veronika', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]){
                             sh 'ansible-playbook -i inventory/dynamic_aws_ec2.yml playbook.yml -u ubuntu -vv'
                         }
                     }    
