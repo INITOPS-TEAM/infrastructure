@@ -1,0 +1,24 @@
+---
+db_host: postgres-service.service.consul #use DNS for service discovery
+database_url: "postgresql://{{ db_user }}:{{ db_password }}@{{ db_host }}:5432/{{ db_name }}"
+app_repo_url: "https://github.com/INITOPS-TEAM/application.git"
+app_branch: "main"
+app_dest: "/var/www/app"
+uploads_path: "/var/lib/pictapp/uploads"
+python_requirements: "{{ app_dest }}/requirements.txt"
+
+consul_version: "1.22.3"
+consul_user: consul
+consul_group: consul
+consul_datacenter: dc1
+consul_data_dir: /opt/consul
+consul_config_dir: /etc/consul.d
+consul_acl_token: "{{ lookup('file', '/tmp/consul_acl_token.txt') }}"
+
+# ansible_user: vagrant
+ansible_ssh_private_key_file: ~/.ssh/ansible
+
+db_name: pictapp
+db_user: pictapp_user
+postgres_version: 16
+
