@@ -8,7 +8,7 @@
 - name: Save gossip key locally
   copy:
     content: "{{ gossip_key.stdout }}"
-    dest: "{{ playbook_dir }}/consul_gossip_key.txt"
+    dest: "/tmp/consul_gossip_key.txt"
     mode: '0600'
   become: no
   when: inventory_hostname == groups['consul'][0]
