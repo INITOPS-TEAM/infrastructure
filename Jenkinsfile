@@ -19,7 +19,7 @@ pipeline {
         stage('Run Ansible Playbook') {
             steps {
                 dir('ansible') {
-                    sh 'ansible-playbook -i inventory/dynamic_ec2.yml playbook.yml'
+                    sh 'ansible-playbook -i inventory/dynamic_aws_ec2.yml playbook.yml'
                 }
             }
         }
