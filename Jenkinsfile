@@ -19,9 +19,11 @@ pipeline {
         stage('Run Ansible Playbook') {
             steps {
                 dir('ansible') {
-                    withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-access-key-veronika',secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]){
-                        sh 'ansible-playbook -i inventory/dynamic_aws_ec2.yml playbook.yml'
-                    }
+                    sshagent(['pictapp-dev-ssh']) {    
+                        withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-access-key-veronika',secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]){
+                            sh 'ansible-playbook -i inventory/dynamic_aws_ec2.yml playbook.yml'
+                        }
+                    }    
                 }
             }
         }
