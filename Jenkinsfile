@@ -13,7 +13,7 @@ pipeline {
 
         stage('Run Ansible Playbook') {
             steps {
-                dir('/home/vagrant/jenkins/ansible') {
+                dir('/ansible') {
                     sh 'ansible-playbook -i inventory/hosts.ini playbook.yml'
                 }
             }
