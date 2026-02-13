@@ -2,6 +2,11 @@ pipeline {
     agent any 
 
     stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/INITOPS-TEAM/infrastructure.git'
+            }
+        }
         stage('Prepare & Check') {
             steps {
                 script {
@@ -13,7 +18,7 @@ pipeline {
 
         stage('Run Ansible Playbook') {
             steps {
-                dir('/ansible') {
+                dir('ansible') {
                     sh 'ansible-playbook -i inventory/hosts.ini playbook.yml'
                 }
             }
