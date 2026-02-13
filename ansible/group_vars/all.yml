@@ -25,3 +25,4 @@ db_name: pictapp
 db_user: pictapp_user
 postgres_version: 16
 
+aws_region: "eu-north-1"
