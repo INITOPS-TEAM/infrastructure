@@ -19,7 +19,9 @@ pipeline {
         stage('Run Ansible Playbook') {
             steps {
                 dir('ansible') {
-                    sh 'ansible-playbook -i inventory/dynamic_aws_ec2.yml playbook.yml'
+                    withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-access-key-veronika',secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]){
+                        sh 'ansible-playbook -i inventory/dynamic_aws_ec2.yml playbook.yml'
+                    }
                 }
             }
         }
