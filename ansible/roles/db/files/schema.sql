@@ -15,8 +15,8 @@ CREATE TABLE IF NOT EXISTS images (
     stored_filename TEXT NOT NULL UNIQUE,
     -- stored_path TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    description VARCHAR,
-    location VARCHAR,
+    description VARCHAR, -- added
+    location VARCHAR, -- added
 
     CONSTRAINT fk_images_user
         FOREIGN KEY (user_id)
@@ -61,3 +61,6 @@ CREATE TABLE IF NOT EXISTS banned (
     id SERIAL PRIMARY KEY,
     ip TEXT UNIQUE
 );
+
+ALTER TABLE images ADD COLUMN IF NOT EXISTS description VARCHAR; -- added
+ALTER TABLE images ADD COLUMN IF NOT EXISTS location VARCHAR; -- added
