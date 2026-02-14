@@ -23,6 +23,52 @@
     - "{{ consul_config_dir }}/certs" 
     - "{{ consul_data_dir }}"
 
+- name: Install dnsmasq on clients
+  apt:
+    name: dnsmasq
+    state: present
+  when: consul_mode == "client"
+
+- name: Stop systemd-resolved on clients
+  systemd:
+    name: systemd-resolved
+    state: stopped
+    enabled: no
+  when: consul_mode == "client"
+
+- name: Configure dnsmasq for Consul DNS on clients
+  copy:
+    dest: /etc/dnsmasq.d/10-consul
+    content: |
+      server=/consul/127.0.0.1#8600
+      listen-address=127.0.0.1
+      bind-interfaces
+    mode: '0644'
+  when: consul_mode == "client"
+  notify: Restart dnsmasq
+
+- name: Remove resolv.conf symlink on clients
+  file:
+    path: /etc/resolv.conf
+    state: absent
+  when: consul_mode == "client"
+
+- name: Create resolv.conf for dnsmasq on clients
+  copy:
+    dest: /etc/resolv.conf
+    content: |
+      nameserver 127.0.0.1
+      nameserver 8.8.8.8
+    mode: '0644'
+  when: consul_mode == "client"
+
+- name: Start dnsmasq on clients
+  systemd:
+    name: dnsmasq
+    state: started
+    enabled: yes
+  when: consul_mode == "client"    
+
 # TLS certificates
 - name: Copy CA certificate
   copy:
