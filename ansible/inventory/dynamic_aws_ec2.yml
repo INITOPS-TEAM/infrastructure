@@ -6,7 +6,7 @@ regions:
 
 groups:
   lb: "'pictapp-dev-lb' in tags.Name"
-  database: "'pictapp-dev-db' in tags.Name"
+  db: "'pictapp-dev-db' in tags.Name"
   app: "'pictapp-dev-app' in tags.Name"
   consul: "'pictapp-dev-consul' in tags.Name"
   jenkins: " 'pictapp-dev-jenkins' in tags.Name"
