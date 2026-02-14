@@ -7,6 +7,8 @@ Environment=FLASK_SECRET_KEY={{ flask_secret_key }}
 Environment=DATABASE_URL={{ database_url }}
 Environment=AWS_REGION={{ aws_region }}
 Environment=S3_BUCKET_NAME={{ s3_bucket_name }}
+Environment=AWS_ACCESS_KEY_ID={{ aws_access_key }}
+Environment=AWS_SECRET_ACCESS_KEY={{ aws_secret_key }}
 
 User={{ ansible_user }}
 WorkingDirectory={{ app_dest }}

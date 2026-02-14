@@ -23,6 +23,8 @@ pipeline {
                                 -u ubuntu \
                                 -e "db_password=${DB_PASSWORD}" \
                                 -e "flask_secret_key=${FLASK_SECRET_KEY}" \
+                                -e "aws_access_key=${AWS_ACCESS_KEY_ID}" \
+                                -e "aws_secret_key=${AWS_SECRET_ACCESS_KEY}" \
                                 -vv
                             '''
                         }
