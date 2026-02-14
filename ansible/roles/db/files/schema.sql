@@ -4,16 +4,19 @@
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL
+    password_hash TEXT NOT NULL,
+    last_ip TEXT -- added
 );
 
 CREATE TABLE IF NOT EXISTS images (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
-    original_filename TEXT NOT NULL,
+    -- original_filename TEXT NOT NULL,
     stored_filename TEXT NOT NULL UNIQUE,
-    stored_path TEXT NOT NULL,
+    -- stored_path TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    description VARCHAR,
+    location VARCHAR,
 
     CONSTRAINT fk_images_user
         FOREIGN KEY (user_id)
