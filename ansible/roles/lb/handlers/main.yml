@@ -3,10 +3,11 @@
     name: nginx
     state: restarted
     
-- name: Reload consul
+- name: Restart consul
   systemd:
     name: consul
-    state: reloaded
+    state: restarted
+    daemon_reload: yes
 
 - name: Restart systemd-resolved
   systemd:
