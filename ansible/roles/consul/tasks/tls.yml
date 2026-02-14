@@ -48,6 +48,12 @@
     - "{{ consul_datacenter }}-client-consul-0.pem"
     - "{{ consul_datacenter }}-client-consul-0-key.pem"
 
+- name: Create certs directory on all hosts
+  file:
+    path: /tmp/consul-certs
+    state: directory
+    mode: '0755'
+
 - name: Distribute certs to all hosts
   copy:
     src: "/tmp/consul-certs-local/{{ item }}"

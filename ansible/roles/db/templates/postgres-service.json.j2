@@ -2,7 +2,7 @@
   "service": {
     "name": "postgres-service",
     "id": "postgres-{{ inventory_hostname }}",
-    "address": "{{ ansible_facts['default_ipv4']['address'] }}",
+    "address": "{{ private_ip_address }}",
     "port": 5432,
     "tags": ["database", "postgresql"],
     "checks": [
