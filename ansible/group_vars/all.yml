@@ -25,5 +25,5 @@ db_name: pictapp
 db_user: pictapp_user
 postgres_version: 16
 
-aws_region: "{{ placement.region }}"
-s3_bucket_name: infra-terraform-birdwatchinittops2026-dev-eun1 # NEED to add terraform TAGS: s3_bucket_name = var.s3_bucket_name
+aws_region: "{{ placement.region }}"  # eu-north-1
+s3_bucket_name: infra-terraform-birdwatchinitops2026-dev-eun1 # NEED to add terraform TAGS: s3_bucket_name = var.s3_bucket_name
