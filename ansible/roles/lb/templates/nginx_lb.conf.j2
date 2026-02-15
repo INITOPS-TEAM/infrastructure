@@ -2,6 +2,7 @@ server {
     listen 80;
 
     location / {
+        resolver 127.0.0.1;
         set $upstream "http://flask-app.service.consul:5000";
         proxy_pass $upstream;
         proxy_set_header Host $host;
