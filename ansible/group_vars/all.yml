@@ -18,7 +18,7 @@ consul_config_dir: /etc/consul.d
 consul_acl_token: "{{ lookup('file', '/tmp/consul_acl_token.txt') }}"
 consul_server_ip: >
                   [ {% for host in groups['consul'] %}
-                      hostvars[host]['private_ip_address'],
+                      {{ hostvars[host]['private_ip_address'] }}
                     {% if not loop.last %},{% endif %}
                     {% endfor %}
                   ]
