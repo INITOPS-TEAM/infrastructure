@@ -117,6 +117,10 @@
   register: server_config_changed
   notify: Restart consul
 
+# ONLY FOR TEST
+- name: Test variable consul_server_ip
+  shell: echo "{{ consul_server_ip }}"
+
 - name: Deploy Consul client config
   template:
     src: client_consul.hcl.j2
