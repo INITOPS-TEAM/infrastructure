@@ -7,7 +7,7 @@ bind_addr      = "{{ private_ip_address }}"
 client_addr    = "0.0.0.0"
 advertise_addr = "{{ private_ip_address }}"
 
-retry_join = {{ consul_server_ip }}
+retry_join = {{ consul_server_ip | replace('"',"'") | safe }}
 
 encrypt = "{{ consul_gossip_key }}"
 
