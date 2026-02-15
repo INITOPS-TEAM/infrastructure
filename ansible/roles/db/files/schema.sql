@@ -63,3 +63,6 @@ CREATE TABLE IF NOT EXISTS banned (
 
 -- ALTER TABLE images ADD COLUMN IF NOT EXISTS location VARCHAR; -- added
 -- ALTER TABLE images DROP COLUMN IF EXISTS original_filename;
+
+ALTER TABLE images ADD COLUMN IF NOT EXISTS location_is_hidden VARCHAR; -- added
+ALTER TABLE images ADD COLUMN IF NOT EXISTS location_password_hash VARCHAR; -- added
