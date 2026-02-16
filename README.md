@@ -21,6 +21,19 @@ Automated deployment of a Flask application with PostgreSQL backend, Nginx load 
 ### Secret Management
 **Gitleaks**: Pre-commit hooks to prevent secrets from being committed
 
+## Code Quality
+
+### Automated Linting
+GitHub Actions workflow runs on every pull request and push:
+
+- **markdownlint**: Markdown formatting
+- **Prettier**: Code formatting (JS, JSON, YAML, Markdown)
+- **CSpell**: Spell checking
+- **npm-groovy-lint**: Groovy/Jenkinsfile syntax (blocking)
+- **yamllint**: YAML syntax and style
+
+Most checks run as warnings. **npm-groovy-lint failures will block the merge** - fix syntax errors before merging.
+
 ## Setup
 
 ### 1. Install Gitleaks Pre-commit Hooks
