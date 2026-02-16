@@ -28,6 +28,31 @@
     path: "/etc/letsencrypt/live/{{ lb_domain }}/fullchain.pem"
   register: le_cert
 
+- name: Ensure ACME challenge directory exists
+  file:
+    path: /var/www/letsencrypt/.well-known/acme-challenge
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "0755"
+
+- name: Create ACME test file
+  copy:
+    dest: /var/www/letsencrypt/.well-known/acme-challenge/ping
+    content: "ok"
+    owner: www-data
+    group: www-data
+    mode: "0644"
+
+- name: Reload nginx before ACME test
+  service:
+    name: nginx
+    state: reloaded
+
+- name: Verify ACME path is reachable locally
+  command: curl -sSf http://localhost/.well-known/acme-challenge/ping
+  changed_when: false
+
 - name: Obtain Let's Encrypt certificate (HTTP-01 via webroot)
   command: >
     certbot certonly --webroot

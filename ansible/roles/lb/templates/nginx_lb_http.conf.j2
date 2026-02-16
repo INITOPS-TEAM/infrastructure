@@ -9,8 +9,8 @@ server {
 
     location ^~ /.well-known/acme-challenge/ {
         root /var/www/letsencrypt;
-        default_type "text/plain";
         try_files $uri =404;
+        default_type "text/plain";
     }
 
     location / {
