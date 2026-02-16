@@ -19,8 +19,20 @@ Automated deployment of a Flask application with PostgreSQL backend, Nginx load 
 - **DNS**: Service discovery via Consul DNS on port 8600
 
 ### Secret Management
-- **Gitleaks**: Pre-commit hooks to prevent secrets from being committed
-- Sensitive data managed via Ansible vault and environment variables
+**Gitleaks**: Pre-commit hooks to prevent secrets from being committed
+
+## Code Quality
+
+### Automated Linting
+GitHub Actions workflow runs on every pull request and push:
+
+- **markdownlint**: Markdown formatting
+- **Prettier**: Code formatting (JS, JSON, YAML, Markdown)
+- **CSpell**: Spell checking
+- **npm-groovy-lint**: Groovy/Jenkinsfile syntax (blocking)
+- **yamllint**: YAML syntax and style
+
+Most checks run as warnings. **npm-groovy-lint failures will block the merge** - fix syntax errors before merging.
 
 ## Setup
 
@@ -31,12 +43,17 @@ Follow installation instructions: https://github.com/gitleaks/gitleaks#installin
 ### 2. Deploy Infrastructure
 
 ```bash
-ansible-playbook -i ansible/inventory/hosts.ini ansible/playbook.yml
+ansible-playbook -i inventory/dynamic_aws_ec2.yml playbook.yml \
+                                -u ubuntu \
+                                -e "db_password=${DB_PASSWORD}" \
+                                -e "flask_secret_key=${FLASK_SECRET_KEY}" \
+                                -e "aws_access_key=${AWS_ACCESS_KEY_ID}" \
+                                -e "aws_secret_key=${AWS_SECRET_ACCESS_KEY}" \
 ```
 
 ## Environment Variables
 
-Configure in `ansible/group_vars/all.yml`:
+Configure in `ansible/group_vars/all.yml` and `ansible/inventory/dynamic_aws_ec2.yml`:
 
 ### Application Configuration
 - `app_repo_url`: "https://github.com/INITOPS-TEAM/application.git"
@@ -48,13 +65,13 @@ Configure in `ansible/group_vars/all.yml`:
 ### Database Configuration
 - `db_name`: pictapp
 - `db_user`: pictapp_user
-- `db_password`: **SENSITIVE** - Store in Ansible Vault
+- `db_password`: **SENSITIVE** - Passing as extra vars
 - `postgres_version`: 16
 - `db_host`: postgres-service.service.consul 
 - `database_url`: "postgresql://{{ db_user }}:{{ db_password }}@{{ db_host }}:5432/{{ db_name }}"
 
 ### Flask Configuration
-- `flask_secret_key`: **SENSITIVE** - Store in Ansible Vault
+- `flask_secret_key`: **SENSITIVE** - Passing as extra vars
 
 ### Consul Configuration
 - `consul_version`: "1.22.3"
@@ -64,10 +81,15 @@ Configure in `ansible/group_vars/all.yml`:
 - `consul_data_dir`: /opt/consul
 - `consul_config_dir`: /etc/consul.d
 - `consul_acl_token`: "{{ lookup('file', '/tmp/consul_acl_token.txt') }}" 
+- `consul_server_ip`: "[ {% for host in groups['consul'] %} \"{{ hostvars[host]['private_ip_address'] }}\" {% if not loop.last %},{% endif %} {% endfor %} ]"
 
 ### Ansible Configuration
 - `ansible_user`: vagrant (change to `ubuntu` or `ec2-user` for production)
 - `ansible_ssh_private_key_file`: ~/.ssh/ansible
+
+### AWS Configuration
+- `aws_region`: "{{ placement.region }}"  
+- `s3_bucket_name`: infra-terraform-birdwatchinitops2026-dev-eun1
 
 ## Consul Operations
 
@@ -118,8 +140,8 @@ vagrant destroy -f
 ## Production Deployment
 
 For AWS EC2 deployment:
-1. Update inventory with EC2 IPs
+1. Pass extra vars to Ansible (`db_password`, `flask_secret_key`, `aws_access_key`, `aws_secret_key`)
 2. Change `ansible_user` from `vagrant` to `ubuntu` or `ec2-user`
-3. Configure SSH keys
-4. Update security groups to allow Consul ports (8300-8302, 8500-8501, 8600)
-5. Use Ansible Vault for sensitive variables (`db_password`, `flask_secret_key`)
+3. Configure SSH keys in Jenkins
+4. Update security groups to allow Consul ports (8300-8301, 8500-8501, 8600)
+

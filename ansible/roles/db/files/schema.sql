@@ -10,10 +10,12 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS images (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
-    original_filename TEXT NOT NULL,
     stored_filename TEXT NOT NULL UNIQUE,
-    stored_path TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    description TEXT,
+    location TEXT,
+    location_is_hidden BOOLEAN DEFAULT FALSE,
+    location_password_hash TEXT
 
     CONSTRAINT fk_images_user
         FOREIGN KEY (user_id)
@@ -56,5 +58,6 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS last_ip TEXT;
 
 CREATE TABLE IF NOT EXISTS banned (
     id SERIAL PRIMARY KEY,
-    ip TEXT UNIQUE,
+    ip TEXT UNIQUE
 );
+

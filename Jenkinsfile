@@ -1,12 +1,6 @@
 pipeline {
     agent any 
-
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/INITOPS-TEAM/infrastructure.git'
-            }
-        }
         stage('Prepare & Check') {
             steps {
                 script {
@@ -15,11 +9,26 @@ pipeline {
                 }
             }
         }
-
         stage('Run Ansible Playbook') {
             steps {
                 dir('ansible') {
-                    sh 'ansible-playbook -i inventory/hosts.ini playbook.yml'
+                    sshagent(['pictapp-dev-ssh']) {    
+                        withCredentials([
+                            string(credentialsId: 'flask-secret-key', variable: 'FLASK_SECRET_KEY'), 
+                            string(credentialsId: 'db-password', variable: 'DB_PASSWORD'), 
+                            aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-access-key-veronika', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')
+                        ]){
+                            sh '''
+                                ansible-playbook -i inventory/dynamic_aws_ec2.yml playbook.yml \
+                                -u ubuntu \
+                                -e "db_password=${DB_PASSWORD}" \
+                                -e "flask_secret_key=${FLASK_SECRET_KEY}" \
+                                -e "aws_access_key=${AWS_ACCESS_KEY_ID}" \
+                                -e "aws_secret_key=${AWS_SECRET_ACCESS_KEY}" \
+                                -vv
+                            '''
+                        }
+                    }    
                 }
             }
         }

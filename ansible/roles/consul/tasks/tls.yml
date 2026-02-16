@@ -1,12 +1,11 @@
 ---
-- name: Create local certs directory
+- name: Create certs directory on first consul server
   file:
     path: /tmp/consul-certs
     state: directory
     mode: '0755'
-  delegate_to: localhost
+  delegate_to: "{{ groups['consul'][0] }}"
   run_once: true
-  become: no
 
 - name: Generate CA certificate
   shell: |
@@ -14,9 +13,8 @@
     consul tls ca create
   args:
     creates: /tmp/consul-certs/consul-agent-ca.pem
-  delegate_to: localhost
+  delegate_to: "{{ groups['consul'][0] }}"
   run_once: true
-  become: no
 
 - name: Generate server certificate
   shell: |
@@ -24,9 +22,8 @@
     consul tls cert create -server -dc={{ consul_datacenter }}
   args:
     creates: /tmp/consul-certs/{{ consul_datacenter }}-server-consul-0.pem
-  delegate_to: localhost
+  delegate_to: "{{ groups['consul'][0] }}"
   run_once: true
-  become: no
 
 - name: Generate client certificate
   shell: |
@@ -34,6 +31,37 @@
     consul tls cert create -client -dc={{ consul_datacenter }}
   args:
     creates: /tmp/consul-certs/{{ consul_datacenter }}-client-consul-0.pem
-  delegate_to: localhost
+  delegate_to: "{{ groups['consul'][0] }}"
   run_once: true
-  become: no
+
+- name: Fetch certs to control node
+  fetch:
+    src: "/tmp/consul-certs/{{ item }}"
+    dest: "/tmp/consul-certs-local/"
+    flat: yes
+  delegate_to: "{{ groups['consul'][0] }}"
+  run_once: true
+  loop:
+    - consul-agent-ca.pem
+    - "{{ consul_datacenter }}-server-consul-0.pem"
+    - "{{ consul_datacenter }}-server-consul-0-key.pem"
+    - "{{ consul_datacenter }}-client-consul-0.pem"
+    - "{{ consul_datacenter }}-client-consul-0-key.pem"
+
+- name: Create certs directory on all hosts
+  file:
+    path: /tmp/consul-certs
+    state: directory
+    mode: '0755'
+
+- name: Distribute certs to all hosts
+  copy:
+    src: "/tmp/consul-certs-local/{{ item }}"
+    dest: "/tmp/consul-certs/{{ item }}"
+    mode: '0644'
+  loop:
+    - consul-agent-ca.pem
+    - "{{ consul_datacenter }}-server-consul-0.pem"
+    - "{{ consul_datacenter }}-server-consul-0-key.pem"
+    - "{{ consul_datacenter }}-client-consul-0.pem"
+    - "{{ consul_datacenter }}-client-consul-0-key.pem"

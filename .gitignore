@@ -1,5 +1,6 @@
 .vagrant
-group_vars/
+ansible/group_vars/db.yml
+ansible/group_vars/app.yml
 uploads/
 .DS_Store
 consul_gossip_key.txt

@@ -26,8 +26,8 @@
   file:
     path: "{{ uploads_path }}"
     state: directory
-    owner: vagrant
-    group: vagrant
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
 
 - name: Create .env file
   copy:
@@ -36,8 +36,8 @@
       SECRET_KEY={{ flask_secret_key }}
       UPLOAD_FOLDER={{ uploads_path }}
     dest: "{{ app_dest }}/.env"
-    owner: vagrant
-    group: vagrant
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
     mode: '0644'
   notify: Restart app
 

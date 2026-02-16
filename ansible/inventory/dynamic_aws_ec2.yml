@@ -1,0 +1,12 @@
+plugin: amazon.aws.aws_ec2
+# aws_profile: iac
+
+regions:
+  - eu-north-1
+
+groups:
+  lb: "'pictapp-dev-lb' in tags.Name"
+  db: "'pictapp-dev-db' in tags.Name"
+  app: "'pictapp-dev-app' in tags.Name"
+  consul: "'pictapp-dev-consul' in tags.Name"
+  jenkins: " 'pictapp-dev-jenkins' in tags.Name"

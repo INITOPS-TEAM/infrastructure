@@ -1,9 +1,14 @@
 ---
+- name: Test vars
+  shell: |
+    echo "{{ ami_launch_index }}"
+
+
 - name: Create /etc/apt/keyrings directory
   file:
     path: /etc/apt/keyrings
     state: directory
-    mode: '0755' #owner - r+w+x, group/other - r+x
+    mode: '0755' 
 
 - name: Add HashiCorp GPG key
   shell: |
