@@ -44,9 +44,9 @@
     state: started
     enabled: yes
 
-- name: Copy nginx load balancer config
+- name: Copy nginx load balancer config (HTTP + ACME)
   template:
-    src: nginx_lb.conf.j2
+    src: nginx_lb_http.conf.j2
     dest: /etc/nginx/sites-available/load_balancer.conf
     mode: '0644'
   notify: Restart nginx
@@ -69,6 +69,8 @@
     name: nginx
     state: started
     enabled: yes
+
+- import_tasks: tls.yml
 
 - name: Register nginx service in Consul
   template:
