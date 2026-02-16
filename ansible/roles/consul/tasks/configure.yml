@@ -69,7 +69,6 @@
     enabled: yes
   when: consul_mode == "client"    
 
-# TLS certificates
 - name: Copy CA certificate
   copy:
     src: /tmp/consul-certs/consul-agent-ca.pem
@@ -127,7 +126,6 @@
   when: consul_mode == "client"
   notify: Restart consul
 
-# TO CHANGE [Service] Type=notify FOR Type=simple
 - name: Create systemd override directory for Consul
   file:
     path: /etc/systemd/system/consul.service.d

@@ -1,13 +1,18 @@
 ---
-db_host: postgres-service.service.consul #use DNS for service discovery
-database_url: "postgresql://{{ db_user }}:{{ db_password }}@{{ db_host }}:5432/{{ db_name }}"
-db_password: ""
-flask_secret_key: ""
 app_repo_url: "https://github.com/INITOPS-TEAM/application.git"
 app_branch: "main"
 app_dest: "/var/www/app"
 uploads_path: "/var/lib/pictapp/uploads"
 python_requirements: "{{ app_dest }}/requirements.txt"
+
+db_name: pictapp
+db_user: pictapp_user
+db_password: ""
+postgres_version: 16
+db_host: postgres-service.service.consul #use DNS for service discovery
+database_url: "postgresql://{{ db_user }}:{{ db_password }}@{{ db_host }}:5432/{{ db_name }}"
+
+flask_secret_key: ""
 
 consul_version: "1.22.3"
 consul_user: consul
@@ -18,14 +23,8 @@ consul_config_dir: /etc/consul.d
 consul_acl_token: "{{ lookup('file', '/tmp/consul_acl_token.txt') }}"
 consul_server_ip: "[ {% for host in groups['consul'] %} \"{{ hostvars[host]['private_ip_address'] }}\" {% if not loop.last %},{% endif %} {% endfor %} ]"
 
-# consul_server_ip: 10.10.11.188 # have to fix it hostvars[host]['private_ip_address']
-
 ansible_user: ubuntu
 ansible_ssh_private_key_file: ~/.ssh/ansible
 
-db_name: pictapp
-db_user: pictapp_user
-postgres_version: 16
-
-aws_region: "{{ placement.region }}"  # eu-north-1
-s3_bucket_name: infra-terraform-birdwatchinitops2026-dev-eun1 # NEED to add terraform TAGS: s3_bucket_name = var.s3_bucket_name
+aws_region: "{{ placement.region }}"  
+s3_bucket_name: infra-terraform-birdwatchinitops2026-dev-eun1 
