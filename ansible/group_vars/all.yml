@@ -1,6 +1,6 @@
 ---
 app_repo_url: "https://github.com/INITOPS-TEAM/application.git"
-app_branch: "feature/INIT-85-add-migrations"
+app_branch: "main"
 app_dest: "/var/www/app"
 uploads_path: "/var/lib/pictapp/uploads"
 python_requirements: "{{ app_dest }}/requirements.txt"
