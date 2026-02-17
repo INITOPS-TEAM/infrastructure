@@ -41,6 +41,40 @@
     mode: '0644'
   notify: Restart app
 
+- name: Create .env file
+  copy:
+    content: |
+      DATABASE_URL={{ database_url }}
+      SECRET_KEY={{ flask_secret_key }}
+      UPLOAD_FOLDER={{ uploads_path }}
+    dest: "{{ app_dest }}/.env"
+    owner: vagrant
+    group: vagrant
+    mode: '0644'
+  notify: Restart app
+
+- name: Stamp database if not initialized
+  command: "{{ app_dest }}/venv/bin/flask db stamp head"
+  args:
+    chdir: "{{ app_dest }}"
+  environment:
+    FLASK_APP: "app"
+    DATABASE_URL: "{{ database_url }}"
+    FLASK_SECRET_KEY: "{{ flask_secret_key }}"
+    AWS_REGION: "{{ aws_region }}"
+    S3_BUCKET_NAME: "{{ s3_bucket_name }}"
+
+- name: Apply database migrations
+  command: "{{ app_dest }}/venv/bin/flask db upgrade"
+  args:
+    chdir: "{{ app_dest }}"
+  environment:
+    FLASK_APP: "app"
+    DATABASE_URL: "{{ database_url }}"
+    FLASK_SECRET_KEY: "{{ flask_secret_key }}"
+    AWS_REGION: "{{ aws_region }}"
+    S3_BUCKET_NAME: "{{ s3_bucket_name }}"
+
 - name: Copy systemd service file
   template:
     src: app.service.j2

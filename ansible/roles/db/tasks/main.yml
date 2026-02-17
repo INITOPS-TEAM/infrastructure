@@ -53,24 +53,12 @@
     state: present
   become_user: postgres
 
-- name: Copy database schema to db host
-  copy:
-    src: schema.sql
-    dest: /tmp/schema.sql
-    owner: postgres
-    group: postgres
-    mode: '0644'
-
-- name: Bootstrap database schema
-  become_user: postgres
-  command: psql -d {{ db_name }} -f /tmp/schema.sql
-  run_once: true
-
-- name: Grant privileges on tables and sequences in public schema to db user
+- name: Grant privileges on public schema
   become_user: postgres
   community.postgresql.postgresql_query:
     db: "{{ db_name }}"
     query: |
+      GRANT ALL PRIVILEGES ON SCHEMA public TO {{ db_user }};
       GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO {{ db_user }};
       GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {{ db_user }};
 
