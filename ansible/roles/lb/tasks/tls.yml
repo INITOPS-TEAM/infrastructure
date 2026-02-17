@@ -13,6 +13,14 @@
     group: www-data
     mode: "0755"
 
+- name: Ensure ACME challenge directory exists
+  file:
+    path: /var/www/letsencrypt/.well-known/acme-challenge
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "0755"
+
 - name: Validate nginx config before cert request
   command: nginx -t
   changed_when: false
@@ -28,76 +36,18 @@
     path: "/etc/letsencrypt/live/{{ lb_domain }}/fullchain.pem"
   register: le_cert
 
-- name: Ensure ACME challenge directory exists
-  file:
-    path: /var/www/letsencrypt/.well-known/acme-challenge
-    state: directory
-    owner: www-data
-    group: www-data
-    mode: "0755"
-
-- name: Create ACME test file
-  copy:
-    dest: /var/www/letsencrypt/.well-known/acme-challenge/ping
-    content: "ok"
-    owner: www-data
-    group: www-data
-    mode: "0644"
-
-- name: Reload nginx before ACME test
-  service:
-    name: nginx
-    state: reloaded
-
-- name: Verify ACME path is reachable locally
-  command: curl -sSf http://localhost/.well-known/acme-challenge/ping
-  changed_when: false
-
-- name: Obtain Let's Encrypt certificate (HTTP-01 via webroot)
-  command: >
-    certbot certonly --webroot
-    -w /var/www/letsencrypt
-    -d {{ lb_domain }}
-    -m {{ le_email }}
-    --agree-tos
-    --non-interactive
-  when: not le_cert.stat.exists
-  notify: Restart nginx
-
-- name: Ensure renewal deploy hook reloads nginx
-  copy:
-    dest: /etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh
-    mode: "0755"
-    content: |
-      #!/bin/bash
-      nginx -t && systemctl reload nginx
-
-- name: Ensure certbot timer is enabled
-  systemd:
-    name: certbot.timer
-    enabled: yes
-    state: started
-
-- name: Deploy HTTPS nginx config
-  template:
-    src: nginx_lb_https.conf.j2
-    dest: /etc/nginx/sites-available/load_balancer.conf
-    mode: '0644'
-  when: le_cert.stat.exists
-  notify: Restart nginx
-
-- name: Re-check certificate after issuance
+- name: Re-check certificate state
   stat:
     path: "/etc/letsencrypt/live/{{ lb_domain }}/fullchain.pem"
   register: le_cert_after
-  when: not le_cert.stat.exists
 
-- name: Deploy HTTPS nginx config (after issuance)
+
+- name: Deploy HTTPS nginx config (when cert exists)
   template:
     src: nginx_lb_https.conf.j2
     dest: /etc/nginx/sites-available/load_balancer.conf
     mode: '0644'
-  when: le_cert_after is defined and le_cert_after.stat.exists
+  when: le_cert_after.stat.exists
   notify: Restart nginx
 
 - name: Validate nginx config after HTTPS template
