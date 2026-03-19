@@ -5,8 +5,11 @@ regions:
   - eu-north-1
 
 groups:
-  lb: "'pictapp-dev-lb' in tags.Name"
-  db: "'pictapp-dev-db' in tags.Name"
-  app: "'pictapp-dev-app' in tags.Name"
-  consul: "'pictapp-dev-consul' in tags.Name"
-  jenkins: " 'pictapp-dev-jenkins' in tags.Name"
+  lb: "'lb' in tags.Name"
+  db: "'db' in tags.Name"
+  app: "'app' in tags.Name"
+  consul: "'consul' in tags.Name"
+
+keyed_groups:
+  - key: tags.Environment
+    prefix: tag_Environment
