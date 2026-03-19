@@ -20,7 +20,7 @@ consul_group: consul
 consul_datacenter: dc1
 consul_data_dir: /opt/consul
 consul_config_dir: /etc/consul.d
-consul_acl_token: "{{ lookup('file', '/tmp/consul_acl_token.txt') }}"
+consul_acl_token: "{{ lookup('file', playbook_dir + '/consul_acl_token.txt') }}"
 consul_server_ip: "[ {% for host in groups['consul'] %} \"{{ hostvars[host]['private_ip_address'] }}\" {% if not loop.last %},{% endif %} {% endfor %} ]"
 
 ansible_user: ubuntu

@@ -9,11 +9,13 @@
 - name: Save ACL token locally
   copy:
     content: "{{ acl_token.stdout }}"
-    dest: "/tmp/consul_acl_token.txt"
+    dest: "{{ playbook_dir }}/consul_acl_token.txt"
     mode: '0600'
   when: consul_mode == "server"
   become: no
+  run_once: true
+  delegate_to: localhost
 
 - name: Read ACL token
   set_fact:
-    consul_acl_token: "{{ lookup('file', '/tmp/consul_acl_token.txt') }}"
+    consul_acl_token: "{{ lookup('file', playbook_dir + '/consul_acl_token.txt') }}"

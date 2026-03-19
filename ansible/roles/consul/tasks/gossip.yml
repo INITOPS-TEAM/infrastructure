@@ -8,7 +8,7 @@
 - name: Save gossip key locally
   copy:
     content: "{{ gossip_key.stdout }}"
-    dest: "/tmp/consul_gossip_key.txt"
+    dest: "{{ playbook_dir }}/consul_gossip_key.txt"
     mode: '0600'
   become: no
   when: inventory_hostname == groups['consul'][0]
@@ -17,6 +17,7 @@
 - name: Read gossip key
   set_fact:
     consul_gossip_key: "{{ lookup('file', playbook_dir + '/consul_gossip_key.txt') }}"
+  run_once: true
 
 - name: Create gossip key file on remote host
   copy:
