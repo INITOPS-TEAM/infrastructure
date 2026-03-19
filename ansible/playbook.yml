@@ -29,7 +29,7 @@
   hosts: lb
   become: yes
   roles:
-     - role: consul
-       vars:
-         consul_mode: client
+    - role: consul
+      vars:
+        consul_mode: client
     - lb
