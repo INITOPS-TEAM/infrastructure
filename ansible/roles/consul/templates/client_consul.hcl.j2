@@ -27,7 +27,7 @@ tls {
     cert_file = "{{ consul_config_dir }}/certs/client.pem"
     key_file  = "{{ consul_config_dir }}/certs/client-key.pem"
 
-    verify_incoming = true
+    verify_incoming = false
     verify_outgoing = true
   }
 }
