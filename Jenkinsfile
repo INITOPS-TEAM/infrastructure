@@ -27,7 +27,7 @@ pipeline {
 				--limit "tag_Environment_${params.ENVIRONMENT}" \
                                 -e "db_password=${DB_PASSWORD}" \
                                 -e "flask_secret_key=${FLASK_SECRET_KEY}" \
-                                -vv
+                                -v
                             """
                         }
                     }    
