@@ -1,0 +1,2 @@
+aws_region: "eu-north-1"
+s3_bucket_name: "bird-secret-marks-dev-images-7c351dda"
