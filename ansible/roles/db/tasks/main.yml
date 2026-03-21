@@ -19,7 +19,6 @@
     regexp: '^#?listen_addresses\s*='
     line: "listen_addresses = '*'"
     state: present
-    backrefs: yes
   notify: Restart PostgreSQL
 
 - name: Configure pg_hba.conf
@@ -30,6 +29,9 @@
     group: postgres
     mode: 0640
   notify: Restart PostgreSQL
+
+- name: Apply PostgreSQL config immediately
+  meta: flush_handlers
 
 - name: Create database
   postgresql_db:
@@ -70,3 +72,8 @@
     group: "{{ consul_group }}"
     mode: '0644'
   notify: Reload consul
+
+- name: Apply Consul service registration immediately
+  meta: flush_handlers
+
+

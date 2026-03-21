@@ -6,6 +6,4 @@ local   all             all                                     peer
 host    all             all             127.0.0.1/32            md5
 
 # Application servers
-{% for host in groups['app'] %}
-host    {{ db_name }}   {{ db_user }}   {{ hostvars[host]['private_ip_address'] }}/32   md5
-{% endfor %}
+host    {{ db_name }}   {{ db_user }}   10.0.0.0/16            md5
