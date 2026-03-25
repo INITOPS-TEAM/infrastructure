@@ -36,10 +36,18 @@
     path: "/etc/letsencrypt/live/{{ lb_domain }}/fullchain.pem"
   register: le_cert
 
+- name: Request initial Let's Encrypt certificate
+  command: >
+    certbot certonly --webroot -w /var/www/letsencrypt
+    -d {{ lb_domain }}
+    --non-interactive --agree-tos
+    --register-unsafely-without-email
+  when: not le_cert.stat.exists
+
 - name: Re-check certificate state
   stat:
     path: "/etc/letsencrypt/live/{{ lb_domain }}/fullchain.pem"
-  register: le_cert_after
+  register: le_cert_after'
 
 
 - name: Deploy HTTPS nginx config (when cert exists)
