@@ -47,7 +47,7 @@
 - name: Re-check certificate state
   stat:
     path: "/etc/letsencrypt/live/{{ lb_domain }}/fullchain.pem"
-  register: le_cert_after'
+  register: le_cert_after
 
 
 - name: Deploy HTTPS nginx config (when cert exists)
