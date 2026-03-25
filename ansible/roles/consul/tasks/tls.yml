@@ -65,3 +65,4 @@
     - "{{ consul_datacenter }}-server-consul-0-key.pem"
     - "{{ consul_datacenter }}-client-consul-0.pem"
     - "{{ consul_datacenter }}-client-consul-0-key.pem"
+  notify: Restart consul
