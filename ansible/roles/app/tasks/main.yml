@@ -65,10 +65,6 @@
     AWS_REGION: "{{ aws_region }}"
     S3_BUCKET_NAME: "{{ s3_bucket_name }}"
   run_once: true
-  register: migration_result
-  until: migration_result is success
-  retries: 10
-  delay: 10
 
 - name: Copy systemd service file
   template:
