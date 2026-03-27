@@ -28,7 +28,7 @@
 - name: Ensure nginx is running (need for HTTP-01)
   service:
     name: nginx
-    state: started
+    state: restarted
     enabled: yes
 
 - name: Check if certificate already exists
