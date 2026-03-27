@@ -40,8 +40,8 @@
   command: >
     certbot certonly --webroot -w /var/www/letsencrypt
     -d {{ lb_domain }}
+    -m {{ lb_email }}
     --non-interactive --agree-tos
-    --register-unsafely-without-email
   when: not le_cert.stat.exists
 
 - name: Re-check certificate state
