@@ -9,7 +9,7 @@
 
 - name: Generate CA certificate
   shell: |
-    cd /tmp/consul-certs
+    cd {{ consul_cert_home }}
     consul tls ca create
   args:
     creates: "{{ consul_cert_home }}/consul-agent-ca.pem"
