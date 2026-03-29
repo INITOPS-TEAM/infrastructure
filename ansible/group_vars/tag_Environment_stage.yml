@@ -1,0 +1,4 @@
+aws_region: "eu-north-1"
+s3_bucket_name: "bird-secret-marks-stage-images-XXXX"
+lb_domain: "1.command-line.top"
+lb_email: "initops.aws@gmail.com"

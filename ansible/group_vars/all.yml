@@ -27,5 +27,3 @@ consul_server_ip: "[ {% for host in groups['consul'] %} \"{{ hostvars[host]['pri
 ansible_user: ubuntu
 ansible_ssh_private_key_file: ~/.ssh/ansible
 
-aws_region: "{{ placement.region }}"  
-s3_bucket_name: infra-terraform-birdwatchinitops2026-dev-eun1 
