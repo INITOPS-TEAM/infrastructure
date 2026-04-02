@@ -1,4 +1,4 @@
 aws_region: "eu-north-1"
 s3_bucket_name: "bird-secret-marks-prod-images-XXXX"
-lb_domain: "1.initops.buzz"
+lb_domain: "initops.buzz"
 lb_email: "initops.aws@gmail.com"
