@@ -1,4 +1,4 @@
 aws_region: "eu-north-1"
-s3_bucket_name: "bird-stage-images-91eede85"
-lb_domain: "1.buried-marks.pp.ua"
+s3_bucket_name: "bird-stage-images-a9c772ed"
+lb_domain: "buried-marks.pp.ua"
 lb_email: "initops.aws@gmail.com"
