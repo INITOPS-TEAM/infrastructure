@@ -70,6 +70,9 @@
     state: started
     enabled: yes
 
+- name: Force all handlers to run immediately
+  meta: flush_handlers
+
 - import_tasks: tls.yml
 
 - name: Register nginx service in Consul

@@ -28,13 +28,21 @@
 - name: Ensure nginx is running (need for HTTP-01)
   service:
     name: nginx
-    state: started
+    state: restarted
     enabled: yes
 
 - name: Check if certificate already exists
   stat:
     path: "/etc/letsencrypt/live/{{ lb_domain }}/fullchain.pem"
   register: le_cert
+
+- name: Request initial Let's Encrypt certificate
+  command: >
+    certbot certonly --webroot -w /var/www/letsencrypt
+    -d {{ lb_domain }}
+    -m {{ lb_email }}
+    --non-interactive --agree-tos
+  when: not le_cert.stat.exists
 
 - name: Re-check certificate state
   stat:

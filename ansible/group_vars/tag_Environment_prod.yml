@@ -1,0 +1,4 @@
+aws_region: "eu-north-1"
+s3_bucket_name: "bird-prod-images-01cc99f8"
+lb_domain: "birds.pp.ua"
+lb_email: "initops.aws@gmail.com"

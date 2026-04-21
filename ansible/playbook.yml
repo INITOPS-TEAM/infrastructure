@@ -7,6 +7,11 @@
       vars:
         consul_mode: server
 
+- name: Gather facts from app servers for DB configuration
+  hosts: app
+  gather_facts: yes
+  tasks: []
+
 - name: Configure db
   hosts: db
   become: yes

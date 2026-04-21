@@ -12,6 +12,18 @@ pipeline {
                 }
             }
         }
+
+	stage('Approve Production') {
+            when {
+                expression { return params.ENVIRONMENT == 'prod' }
+            }
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    input message: "Deploy to PRODUCTION. Continue?", ok: 'Yes, deploy'
+                }
+            }
+        }
+
         stage('Run Ansible Playbook') {
             steps {
                 dir('ansible') {
